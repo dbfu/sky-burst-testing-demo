@@ -1,27 +1,16 @@
 # Sky Burst 测试用例索引
-# 每个用例独立目录，包含用例定义 + 执行报告
+# 按模块分组，每个用例独立目录
 
 project:
   name: Sky Burst
-  type: Canvas 纸版飞行射击游戏
+  type: Canvas 纵版飞行射击游戏
   version: v1.1
   repository: https://github.com/dbfu/sky-burst-testing-demo
 
-structure:
-  description: 每个用例一个目录，包含用例定义和执行报告
-  pattern: TC-{ID}/TC-{ID}.yaml + TC-{ID}/index.md + TC-{ID}/{execution}/
-
 modules:
-  ui:
-    name: UI 模块
-    cases:
-      - TC-UI-001
-      - TC-UI-002
-      - TC-UI-003
-    count: 3
-
-  controls:
+  - id: controls
     name: 键盘控制模块
+    directory: controls/
     cases:
       - TC-CTRL-001
       - TC-CTRL-002
@@ -33,13 +22,35 @@ modules:
       - TC-CTRL-008
     count: 8
 
-cases_directory: ./  # 用例目录位于当前目录下
+  - id: ui
+    name: UI 模块
+    directory: ui/
+    cases:
+      - TC-UI-001
+      - TC-UI-002
+      - TC-UI-003
+    count: 3
+
+  - id: items
+    name: 道具系统模块
+    directory: items/
+    cases:
+      - TC-ITEM-001
+    count: 1
+
+structure:
+  pattern: "{module}/{case-id}/"
+  contents:
+    - "{case-id}.yaml"    # 用例定义
+    - "index.md"          # 执行历史汇总
+    - "{execution}/"      # 执行报告目录
 
 quick_links:
-  - TC-CTRL-007: [用例定义](TC-CTRL-007/TC-CTRL-007.yaml) | [执行历史](TC-CTRL-007/index.md)
-  - TC-UI-001: [用例定义](TC-UI-001/TC-UI-001.yaml) | [执行历史](TC-UI-001/index.md)
+  - TC-CTRL-007: controls/TC-CTRL-007/
+  - TC-UI-001: ui/TC-UI-001/
+  - TC-ITEM-001: items/TC-ITEM-001/
 
 workflow_docs:
-  - ISSUE_WORKFLOW.md: Issue 提流程
-  - REGRESSION_WORKFLOW.md: 复测流程
-  - TESTER_RESPONSIBILITIES.md: 测试人员职责
+  - ISSUE_WORKFLOW.md
+  - REGRESSION_WORKFLOW.md
+  - TESTER_RESPONSIBILITIES.md
