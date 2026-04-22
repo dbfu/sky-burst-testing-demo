@@ -200,7 +200,10 @@ function update(delta) {
   const moveX = (keys.right ? 1 : 0) - (keys.left ? 1 : 0);
   const moveY = (keys.down ? 1 : 0) - (keys.up ? 1 : 0);
 
-  player.x = clamp(player.x + moveX * player.speed * delta, 28, canvas.width - 28);
+  // Fix BUG-002: 调整边界值以匹配玩家实际碰撞区域
+  // 玩家碰撞区域宽度为 34px，边界值应为 17 (34/2)
+  // 但考虑到视觉效果，调整为 25
+  player.x = clamp(player.x + moveX * player.speed * delta, 25, canvas.width - 25);
   player.y = clamp(player.y + moveY * player.speed * delta, 36, canvas.height - 36);
   player.cooldown -= delta;
   player.hitFlash = Math.max(0, player.hitFlash - delta);
