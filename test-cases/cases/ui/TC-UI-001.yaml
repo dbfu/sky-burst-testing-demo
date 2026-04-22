@@ -1,0 +1,54 @@
+# TC-UI-001 启动界面显示
+# UI 模块 - 测试用例
+
+id: TC-UI-001
+title: 启动界面显示
+version: 1.0
+priority: P0
+module: ui
+tags: [smoke, ui, overlay]
+
+created_at: 2026-04-22
+updated_at: 2026-04-22
+status: active
+
+history:
+  - version: 1.0
+    date: 2026-04-22
+    author: Claude
+    change: 初始创建
+
+preconditions:
+  - 打开 index.html
+
+steps:
+  - action: 加载页面
+    expected: 页面正常渲染
+  - action: 不点击开始按钮
+    expected: overlay 保持显示状态
+
+expected_results:
+  - overlay 元素可见，不包含 is-hidden 类
+  - 标题文本为 "准备起飞"
+  - 按钮文案为 "开始游戏"
+  - HUD 显示 score=0, health=3, level=1
+
+assertions:
+  - type: dom
+    selector: "#overlay"
+    condition: not.hasClass('is-hidden')
+  - type: dom
+    selector: "#overlayTitle"
+    condition: text == "准备起飞"
+  - type: dom
+    selector: "#startButton"
+    condition: text == "开始游戏"
+  - type: dom
+    selector: "#score"
+    condition: text == "0"
+  - type: dom
+    selector: "#health"
+    condition: text == "3"
+  - type: dom
+    selector: "#level"
+    condition: text == "1"

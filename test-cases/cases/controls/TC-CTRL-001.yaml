@@ -1,0 +1,40 @@
+# TC-CTRL-001 ArrowLeft 左移
+# 键盘控制模块 - 测试用例
+
+id: TC-CTRL-001
+title: ArrowLeft 左移
+version: 1.0
+priority: P0
+module: controls
+tags: [keyboard, movement, regression]
+
+created_at: 2026-04-22
+updated_at: 2026-04-22
+status: active
+
+history:
+  - version: 1.0
+    date: 2026-04-22
+    author: Claude
+    change: 初始创建
+
+preconditions:
+  - 游戏运行中
+  - 玩家不贴边（x > 25）
+
+steps:
+  - action: 按住 ArrowLeft 500ms
+    input:
+      key: ArrowLeft
+      duration: 500ms
+  - action: 松开按键
+    expected: 移动停止
+
+expected_results:
+  - 玩家 x 坐标减小
+  - 玩家 y 坐标基本不变
+
+assertions:
+  - type: state
+    description: x_after < x_before
+    evidence: [player_position_log]

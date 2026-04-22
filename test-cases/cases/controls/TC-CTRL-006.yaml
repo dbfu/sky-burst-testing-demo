@@ -1,0 +1,40 @@
+# TC-CTRL-006 组合方向移动
+# 键盘控制模块 - 测试用例
+
+id: TC-CTRL-006
+title: 组合方向移动
+version: 1.0
+priority: P1
+module: controls
+tags: [keyboard, movement]
+
+created_at: 2026-04-22
+updated_at: 2026-04-22
+status: active
+
+history:
+  - version: 1.0
+    date: 2026-04-22
+    author: Claude
+    change: 初始创建
+
+preconditions:
+  - 游戏运行中
+  - 玩家位于画布中心附近
+
+steps:
+  - action: 同时按住 ArrowLeft + ArrowUp 800ms
+    input:
+      keys: [ArrowLeft, ArrowUp]
+      duration: 800ms
+  - action: 松开所有按键
+
+expected_results:
+  - x 坐标减小
+  - y 坐标减小
+  - 出现斜向位移，而不是只响应一个方向
+
+assertions:
+  - type: state
+    description: x_after < x_before AND y_after < y_before
+    evidence: [player_position_log]

@@ -1,0 +1,39 @@
+# TC-CTRL-004 ArrowDown 下移
+# 键盘控制模块 - 测试用例
+
+id: TC-CTRL-004
+title: ArrowDown 下移
+version: 1.0
+priority: P0
+module: controls
+tags: [keyboard, movement]
+
+created_at: 2026-04-22
+updated_at: 2026-04-22
+status: active
+
+history:
+  - version: 1.0
+    date: 2026-04-22
+    author: Claude
+    change: 初始创建
+
+preconditions:
+  - 游戏运行中
+  - 玩家不贴边（y < canvas.height - 36）
+
+steps:
+  - action: 按住 ArrowDown 500ms
+    input:
+      key: ArrowDown
+      duration: 500ms
+  - action: 松开按键
+
+expected_results:
+  - 玩家 y 坐标增大
+  - 玩家 x 坐标基本不变
+
+assertions:
+  - type: state
+    description: y_after > y_before
+    evidence: [player_position_log]
