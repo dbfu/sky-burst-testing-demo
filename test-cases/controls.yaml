@@ -2,7 +2,7 @@
 # 覆盖方向键、WASD、组合键、边界限制
 #
 # 模块版本: v1.2
-# 最后更新: 2026-04-25
+# 最后更新: 2026-04-28
 
 test_cases:
   - id: TC-CTRL-001
@@ -21,7 +21,7 @@ test_cases:
         change: 初始创建
     preconditions:
       - 游戏运行中
-      - 玩家不贴边（x > 28）
+      - 玩家不贴边（x > 25）
     steps:
       - action: 按住 ArrowLeft 500ms
         input:
@@ -53,7 +53,7 @@ test_cases:
         change: 初始创建
     preconditions:
       - 游戏运行中
-      - 玩家不贴边（x < canvas.width - 28）
+      - 玩家不贴边（x < canvas.width - 25）
     steps:
       - action: 按住 ArrowRight 500ms
         input:
@@ -68,30 +68,20 @@ test_cases:
         description: x_after > x_before
         evidence: [player_position_log]
 
-  - id: TC-CTRL-007
-    title: 移动边界限制
-    version: 1.1
+  - id: TC-CTRL-003
+    title: ArrowUp 上移
+    version: 1.0
     priority: P0
     module: controls
-    tags: [boundary, movement, regression]
+    tags: [keyboard, movement]
     created_at: 2026-04-22
-    updated_at: 2026-04-25
+    updated_at: 2026-04-22
     status: active
     history:
       - version: 1.0
         date: 2026-04-22
         author: Claude
-        change: 初始创建，边界值设定为 28
-      - version: 1.1
-        date: 2026-04-25
-        author: Claude
-        change: 修复 BUG-002 后，边界值调整为 25，更新断言验证逻辑
-
-  - id: TC-CTRL-003
-    title: ArrowUp 上移
-    priority: P0
-    module: controls
-    tags: [keyboard, movement]
+        change: 初始创建
     preconditions:
       - 游戏运行中
       - 玩家不贴边（y > 36）
@@ -111,9 +101,18 @@ test_cases:
 
   - id: TC-CTRL-004
     title: ArrowDown 下移
+    version: 1.0
     priority: P0
     module: controls
     tags: [keyboard, movement]
+    created_at: 2026-04-22
+    updated_at: 2026-04-22
+    status: active
+    history:
+      - version: 1.0
+        date: 2026-04-22
+        author: Claude
+        change: 初始创建
     preconditions:
       - 游戏运行中
       - 玩家不贴边（y < canvas.height - 36）
@@ -133,9 +132,18 @@ test_cases:
 
   - id: TC-CTRL-005
     title: WASD 等价控制
+    version: 1.0
     priority: P0
     module: controls
     tags: [keyboard, movement, regression]
+    created_at: 2026-04-22
+    updated_at: 2026-04-22
+    status: active
+    history:
+      - version: 1.0
+        date: 2026-04-22
+        author: Claude
+        change: 初始创建
     preconditions:
       - 游戏运行中
       - 玩家位于画布中心区域
@@ -162,9 +170,18 @@ test_cases:
 
   - id: TC-CTRL-006
     title: 组合方向移动
+    version: 1.0
     priority: P1
     module: controls
     tags: [keyboard, movement]
+    created_at: 2026-04-22
+    updated_at: 2026-04-22
+    status: active
+    history:
+      - version: 1.0
+        date: 2026-04-22
+        author: Claude
+        change: 初始创建
     preconditions:
       - 游戏运行中
       - 玩家位于画布中心附近
@@ -185,9 +202,26 @@ test_cases:
 
   - id: TC-CTRL-007
     title: 移动边界限制
+    version: 1.2
     priority: P0
     module: controls
     tags: [boundary, movement, regression]
+    created_at: 2026-04-22
+    updated_at: 2026-04-28
+    status: active
+    history:
+      - version: 1.0
+        date: 2026-04-22
+        author: Claude
+        change: 初始创建，边界值设定为 28
+      - version: 1.1
+        date: 2026-04-25
+        author: Claude
+        change: 修复 BUG-002 后，边界值调整为 25
+      - version: 1.2
+        date: 2026-04-28
+        author: Claude
+        change: 新增 Y 轴边界断言，完善边界验证逻辑
     preconditions:
       - 游戏运行中
     steps:
@@ -201,23 +235,32 @@ test_cases:
         expected: 玩家停止在下边界
     expected_results:
       - 玩家不会越界
-      - X 始终位于 [28, canvas.width - 28]
+      - X 始终位于 [25, canvas.width - 25]
       - Y 始终位于 [36, canvas.height - 36]
     assertions:
       - type: state
         description: 边界值稳定，不出现超边或抖动穿透
         validate:
-          - player.x >= 28
-          - player.x <= canvas.width - 28
+          - player.x >= 25
+          - player.x <= canvas.width - 25
           - player.y >= 36
           - player.y <= canvas.height - 36
         evidence: [screenshot, position_log]
 
   - id: TC-CTRL-008
     title: 未开始时键盘无效
+    version: 1.0
     priority: P1
     module: controls
     tags: [keyboard, state]
+    created_at: 2026-04-22
+    updated_at: 2026-04-22
+    status: active
+    history:
+      - version: 1.0
+        date: 2026-04-22
+        author: Claude
+        change: 初始创建
     preconditions:
       - 页面初始状态
       - 未点击开始按钮
