@@ -2,151 +2,185 @@
 
 本目录用于存储 Sky Burst 游戏的测试执行报告。
 
-## 目录命名规范
-
-格式：`YYYY-MM-DD_类型`
-
-| 类型 | 格式 | 示例 | 用途 |
-|------|------|------|------|
-| 全量测试 | `YYYY-MM-DD_run-NNN` | `2026-04-22_run-001` | 日常全量回归 |
-| 模块专项 | `YYYY-MM-DD_module名` | `2026-04-22_controls` | 模块专项验证 |
-| 版本回归 | `vX.Y_类型` | `v1.1_regression` | 版本发布前回归 |
-| 缺陷验证 | `YYYY-MM-DD_bug-ID` | `2026-04-25_bug-002` | 单缺陷验证 |
-| 冒烟测试 | `YYYY-MM-DD_smoke` | `2026-04-22_smoke` | 快速冒烟 |
-
 ---
 
-## 目录结构示例
+## 目录结构
 
 ```
 reports/
-├── 2026-04-22_index.md          # 当日执行索引
-├── 2026-04-22_run-001/          # 当日首次全量回归
-│   ├── summary.md               # 汇总报告
-│   ├── TC-UI-001.md             # 单用例报告
-│   ├── TC-CTRL-007.md
-│   └── artifacts/               # 执行证据
+├── TC-{用例ID}/                 # 每个用例独立目录
+│   ├── index.md                 # 用例执行历史汇总 ⭐
+│   ├── YYYY-MM-DD_NNN.md        # 单次执行报告
+│   ├── YYYY-MM-DD_NNN-pass.md   # 通过报告（带后缀）
+│   ├── YYYY-MM-DD_NNN-fail.md   # 失败报告（带后缀）
+│   └── artifacts/               # 该用例的证据文件
 │       ├── screenshots/
 │       ├── videos/
 │       └── logs/
 │
-├── 2026-04-22_run-002/          # 当日第二次回归（修复后）
-│   ├── summary.md
-│   ├── TC-CTRL-007.md           # 回归验证报告
-│   └── artifacts/
+├── daily/                       # 当日执行汇总
+│   ├── YYYY-MM-DD.md            # 当日汇总
+│   └── YYYY-MM-DD.md
 │
-├── 2026-04-22_controls/         # 当日模块专项
-│   ├── summary.md
-│   └── ...
+├── templates/                   # 报告模板
+│   ├── test_report.md           # 标准测试报告模板
+│   └── regression_report.md     # 回归验证报告模板
 │
-├── 2026-04-25_run-001/          # v1.1 道具系统测试
-│   ├── summary.md
-│   ├── TC-ITEM-001.md
-│   └── artifacts/
+├── issue-drafts/                # Issue 内容草稿
+│   └── issue-{序号}-{用例ID}.md
 │
-├── DIRECTORY_SPEC.md            # 目录命名规范详细说明
 └── README.md                    # 本说明文件
 ```
 
 ---
 
-## 当日索引文件
+## 目录命名规则
 
-每个测试日期创建一个索引文件 `YYYY-MM-DD_index.md`：
+### 用例目录
 
-```markdown
-# 2026-04-22 测试执行索引
+| 规则 | 格式 | 示例 |
+|------|------|------|
+| 用例目录 | `TC-{用例ID}` | `TC-CTRL-007/` |
+| 执行报告 | `YYYY-MM-DD_NNN[-状态]` | `2026-04-22_001-fail.md` |
+| 汇总文件 | `index.md` | `index.md` |
+| 证据目录 | `artifacts/` | `artifacts/screenshots/` |
 
-| 执行批次 | 开始时间 | 类型 | 用例数 | 通过 | 失败 | 详情 |
-|---------|---------|------|--------|------|------|------|
-| run-001 | 14:30 | 全量回归 | 32 | 28 | 2 | [summary](2026-04-22_run-001/summary.md) |
-| run-002 | 16:30 | 回归验证 | 10 | 10 | 0 | [summary](2026-04-22_run-002/summary.md) |
+### 执行报告命名后缀
+
+| 后缀 | 含义 |
+|------|------|
+| `-pass` | 执行通过 |
+| `-fail` | 执行失败 |
+| `-regression-pass` | 回归验证通过 |
+| `-regression-fail` | 回归验证失败 |
+
+### 当日汇总
+
+| 规则 | 格式 | 示例 |
+|------|------|------|
+| 当日汇总 | `YYYY-MM-DD.md` | `daily/2026-04-22.md` |
+
+---
+
+## 核心文件说明
+
+### index.md（用例执行历史汇总）
+
+每个用例目录下的 `index.md` 包含：
+
+- 用例基本信息
+- 执行历史表格（链接到每次执行报告）
+- 执行统计（通过/失败次数）
+- Issue 关联记录
+- 证据文件清单
+- 用例版本变更历史
+
+**作用**: 快速追溯一个用例的完整执行历史。
+
+### 单次执行报告
+
+每次执行生成的报告文件：
+
+- 用例信息
+- 执行信息
+- 执行结果
+- 执行步骤记录
+- 断言验证
+- 证据链接
+- Issue 关联（如有）
+
+---
+
+## 使用示例
+
+### 查看用例执行历史
+
+```bash
+# 查看 TC-CTRL-007 的所有执行记录
+cat test-cases/reports/TC-CTRL-007/index.md
+
+# 查看首次失败报告
+cat test-cases/reports/TC-CTRL-007/2026-04-22_001-fail.md
+
+# 查看复测通过报告
+cat test-cases/reports/TC-CTRL-007/2026-04-22_002-pass.md
+```
+
+### 查看当日执行汇总
+
+```bash
+# 查看当日所有用例执行情况
+cat test-cases/reports/daily/2026-04-22.md
+```
+
+### 查看特定用例的证据
+
+```bash
+# 查看截图
+ls test-cases/reports/TC-CTRL-007/artifacts/screenshots/
+
+# 查看日志
+cat test-cases/reports/TC-CTRL-007/artifacts/logs/2026-04-22_001-position.json
 ```
 
 ---
 
-## 执行批次命名规则
+## 执行序号生成规则
 
-### 序号生成
+同一用例在同一天多次执行时，序号递增：
 
 ```bash
 # 当日首次执行
-2026-04-22_run-001
+2026-04-22_001-fail.md
 
-# 当日第二次执行
-2026-04-22_run-002
+# 当日第二次执行（复测）
+2026-04-22_002-pass.md
 
 # 当日第三次执行
-2026-04-22_run-003
+2026-04-22_003-regression-pass.md
+
+# 另一天执行
+2026-04-25_001-pass.md
 ```
 
-### 自动生成脚本
+---
+
+## 与旧结构对比
+
+| 旧结构 | 新结构 |
+|--------|--------|
+| 按批次目录组织 | 按用例目录组织 |
+| 同用例报告分散在多个目录 | 同用例报告集中在同一目录 |
+| 无执行历史汇总 | 有 index.md 汇总 |
+| Issue 草稿混在报告目录 | Issue 草稿独立目录 |
+| 无 artifacts 结构 | artifacts 集中存放证据 |
+
+---
+
+## 创建新执行报告
 
 ```bash
-#!/bin/bash
+# 创建用例目录（首次）
+mkdir -p test-cases/reports/TC-NEW-001/artifacts/screenshots
+
+# 创建执行报告
 DATE=$(date +%Y-%m-%d)
-COUNT=$(ls -d reports/${DATE}_run-* 2>/dev/null | wc -l | tr -d ' ')
-NEXT=$((COUNT + 1))
-BATCH_ID="${DATE}_run-$(printf '%03d' $NEXT)"
+SEQ=001
+touch test-cases/reports/TC-NEW-001/${DATE}_${SEQ}-pass.md
 
-mkdir -p "reports/${BATCH_ID}/artifacts"
-echo "Created: reports/${BATCH_ID}"
+# 创建 index.md
+touch test-cases/reports/TC-NEW-001/index.md
+
+# 更新当日汇总
+touch test-cases/reports/daily/${DATE}.md
 ```
 
 ---
 
-## 报告文件规范
+## 关键优势
 
-### 单用例报告命名
-
-- 文件名：`TC-{用例ID}.md`
-- 示例：`TC-CTRL-007.md`
-
-### 汇总报告命名
-
-- 文件名：`summary.md`
-- 内容：执行统计、用例列表、缺陷汇总
-
----
-
-## 证据文件命名
-
-| 类型 | 格式 | 示例 |
-|------|------|------|
-| 截图 | `TC-{ID}-{描述}.png` | `TC-CTRL-007-fail.png` |
-| 视频 | `TC-{ID}-{描述}.webm` | `TC-CTRL-007-fail.webm` |
-| 日志 | `TC-{ID}-{类型}.json` | `TC-CTRL-007-position.json` |
-
----
-
-## 快速检索
-
-```bash
-# 查看当日所有执行批次
-ls reports/2026-04-22_*
-
-# 查看当日索引
-cat reports/2026-04-22_index.md
-
-# 查看特定批次汇总
-cat reports/2026-04-22_run-001/summary.md
-
-# 查看特定用例所有执行记录
-find reports -name "TC-CTRL-007.md"
-```
-
----
-
-## 与 Issue 关联
-
-每份测试报告包含 Issue 关联字段：
-
-```markdown
-## 关联缺陷
-
-| 项目 | 内容 |
-|------|------|
-| GitHub Issue | [#12](https://github.com/.../issues/12) |
-| 发现批次 | 2026-04-22_run-001 |
-| 验证批次 | 2026-04-22_run-002 |
-```
+1. **追溯便捷** - 同一用例所有执行历史集中在一个目录
+2. **一目了然** - index.md 快速查看执行历史和统计
+3. **命名统一** - 日期+序号+状态后缀，含义清晰
+4. **证据集中** - artifacts 存放该用例所有证据文件
+5. **当日汇总** - daily 目录便于查看当日整体执行情况
