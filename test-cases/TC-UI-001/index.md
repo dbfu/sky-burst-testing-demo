@@ -37,11 +37,18 @@
 
 ```
 TC-UI-001/
-├── 2026-04-22_001-pass/
+├── TC-UI-001.yaml             # 用例定义
+├── index.md                   # 执行历史汇总
+├── 2026-04-22_001-pass/       # 执行报告 + 证据
 │   ├── report.md
 │   └── screenshots/
-└── index.md
 ```
+
+---
+
+## 用例定义
+
+参见：[TC-UI-001.yaml](TC-UI-001.yaml)
 
 ---
 

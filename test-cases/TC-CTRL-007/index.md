@@ -78,4 +78,28 @@ TC-CTRL-007/
 
 ---
 
+## 用例定义
+
+参见：[TC-CTRL-007.yaml](TC-CTRL-007.yaml)
+
+---
+
+## 目录结构
+
+```
+TC-CTRL-007/
+├── TC-CTRL-007.yaml           # 用例定义
+├── index.md                   # 执行历史汇总
+├── 2026-04-22_001-fail/       # 执行报告 + 证据
+│   ├── report.md
+│   ├── screenshots/
+│   ├── videos/
+│   └── logs/
+├── 2026-04-22_002-pass/
+│   └── report.md
+└── ...
+```
+
+---
+
 *最后更新: 2026-04-22*
