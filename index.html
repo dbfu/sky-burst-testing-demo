@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Sky Burst</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="game-shell">
+    <section class="hud-panel">
+      <div>
+        <p class="eyebrow">Arcade Flight</p>
+        <h1>Sky Burst</h1>
+      </div>
+      <div class="hud-stats">
+        <div class="stat">
+          <span>得分</span>
+          <strong id="score">0</strong>
+        </div>
+        <div class="stat">
+          <span>生命</span>
+          <strong id="health">3</strong>
+        </div>
+        <div class="stat">
+          <span>阶段</span>
+          <strong id="level">1</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="playfield-wrap">
+      <canvas id="gameCanvas" width="480" height="800" aria-label="打飞机游戏画布"></canvas>
+      <div class="overlay" id="overlay">
+        <div class="overlay-card">
+          <p class="overlay-kicker">Canvas Shooter</p>
+          <h2 id="overlayTitle">准备起飞</h2>
+          <p id="overlayText">方向键或 WASD 移动，空格冲刺，移动端可直接拖动飞机。</p>
+          <button id="startButton" type="button">开始游戏</button>
+        </div>
+      </div>
+      <div class="mobile-controls" aria-hidden="true">
+        <button class="control-btn" data-dir="left">←</button>
+        <button class="control-btn" data-dir="up">↑</button>
+        <button class="control-btn" data-dir="down">↓</button>
+        <button class="control-btn" data-dir="right">→</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="game.js"></script>
+</body>
+</html>

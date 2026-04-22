@@ -99,6 +99,8 @@ player.x = clamp(player.x + moveX * player.speed * delta, 28, canvas.width - 28)
 | 缺陷标题 | 玩家移动边界限制失效 |
 | 严重等级 | 🔴 Critical |
 | 状态 | Open |
+| GitHub Issue | [#12](https://github.com/your-org/sky-burst/issues/12) |
+| Issue 创建时间 | 2026-04-22 14:35 |
 
 ---
 
