@@ -1,0 +1,196 @@
+# 游戏机制模块测试用例
+# 覆盖射击、敌机、Boss、碰撞、得分、生命
+
+test_cases:
+  - id: TC-MECH-001
+    title: 自动双发射击
+    priority: P0
+    module: mechanics
+    tags: [shooting, auto-fire, regression]
+    preconditions:
+      - 游戏开始
+      - 玩家存活
+    steps:
+      - action: 保持静止并观察 1 秒
+        expected: 自动发射多轮子弹
+    expected_results:
+      - 自动持续发射双发子弹
+      - 1 秒内应出现多轮射击（约 5-6 轮）
+      - 每次射击产生 2 发子弹
+      - 连发间隔约 0.17s
+    assertions:
+      - type: state
+        description: 单次射击产生 2 发子弹，间隔约 0.17s
+        validate:
+          - bullets.length 每轮增加 2
+          - interval between 0.12s and 0.22s
+        evidence: [bullet_count_log, timing_log]
+
+  - id: TC-MECH-002
+    title: 普通敌机生成
+    priority: P0
+    module: mechanics
+    tags: [enemy, spawn, regression]
+    preconditions:
+      - 游戏运行中
+    steps:
+      - action: 观察 3 秒内敌机生成
+        expected: 多架敌机从顶部进入
+    expected_results:
+      - 普通敌机从顶部进入（y < 0 初始）
+      - 敌机存在尺寸、速度和漂移差异
+      - 生成间隔随阶段上升而缩短
+    assertions:
+      - type: state
+        description: 敌机 y 初值小于 0，属性有随机性
+        validate:
+          - enemy.y < 0 at spawn
+          - 存在 size/speed/drift 差异
+        evidence: [enemy_spawn_log]
+
+  - id: TC-MECH-003
+    title: Boss 生成与阶段变化
+    priority: P0
+    module: mechanics
+    tags: [boss, level, regression]
+    preconditions:
+      - 游戏连续运行
+      - bossTimer 从 0 开始
+    steps:
+      - action: 等待约 16 秒
+        expected: Boss 出现
+    expected_results:
+      - Boss 从顶部中央进入
+      - Boss 出现时阶段立即加 1
+      - Boss 有独立外观和血条
+    assertions:
+      - type: state
+        description: 阶段升级发生在 Boss 生成时
+        validate:
+          - boss.type == "boss"
+          - level increased when boss spawned
+          - boss spawn interval approx 16s
+        evidence: [level_log, boss_spawn_time]
+
+  - id: TC-MECH-004
+    title: 子弹命中普通敌机
+    priority: P0
+    module: mechanics
+    tags: [collision, scoring, regression]
+    preconditions:
+      - 存在普通敌机
+      - 子弹可命中敌机
+    steps:
+      - action: 使子弹命中普通敌机
+        expected: 敌机受击或被击毁
+    expected_results:
+      - 敌机生命减少
+      - 命中产生绿色粒子（#8df3c1）
+      - 击毁后得分加 5
+      - 敌机消失
+    assertions:
+      - type: state
+        description: 单次命中只消耗 1 发子弹，击毁才加分
+        validate:
+          - bullet.dead == true on hit
+          - enemy.health decreases
+          - score += 5 on kill
+          - particles created with color #8df3c1
+        evidence: [score_log, particle_log]
+
+  - id: TC-MECH-005
+    title: 子弹命中 Boss
+    priority: P1
+    module: mechanics
+    tags: [boss, collision, scoring]
+    preconditions:
+      - Boss 已出现
+      - 玩家可射击 Boss
+    steps:
+      - action: 连续命中 Boss 直到击毁
+        expected: Boss 被击毁
+    expected_results:
+      - Boss 血条缩短
+      - 击毁后得分加 30
+      - 产生金色爆炸粒子（#ffe27a）
+      - Boss 消失
+    assertions:
+      - type: state
+        description: Boss 血条长度随生命减少而减少
+        validate:
+          - boss.health decreases
+          - health bar width decreases
+          - score += 30 on kill
+          - particles created with color #ffe27a
+        evidence: [boss_health_log, score_log]
+
+  - id: TC-MECH-006
+    title: 敌机撞击玩家
+    priority: P0
+    module: mechanics
+    tags: [collision, health, regression]
+    preconditions:
+      - 玩家与敌机可接触
+      - 玩家生命至少为 2
+    steps:
+      - action: 让敌机撞上玩家
+        expected: 玩家受击
+    expected_results:
+      - 玩家生命减 1
+      - 敌机消失
+      - 玩家触发约 0.6 秒受击闪烁
+      - 产生粉红色粒子（#ff8674）
+    assertions:
+      - type: state
+        description: 受击后短时间内不应重复扣血
+        validate:
+          - player.health -= 1
+          - enemy.dead == true
+          - player.hitFlash approx 0.6s
+          - particles created with color #ff8674
+        evidence: [health_log, hit_flash_log]
+
+  - id: TC-MECH-007
+    title: 受击无敌时间
+    priority: P0
+    module: mechanics
+    tags: [invincibility, health, regression]
+    preconditions:
+      - 玩家刚发生一次碰撞
+      - 玩家处于闪烁状态
+    steps:
+      - action: 在闪烁期间立刻再与敌机接触
+        expected: 不应再次扣血
+    expected_results:
+      - 不应再次扣除生命
+      - 玩家继续闪烁
+    assertions:
+      - type: state
+        description: hitFlash > 0 期间生命保持不变
+        validate:
+          - player.hitFlash > 0 时
+          - 再次碰撞不触发 health -= 1
+        evidence: [health_log, hit_flash_log]
+
+  - id: TC-MECH-008
+    title: 难度递增
+    priority: P1
+    module: mechanics
+    tags: [difficulty, scaling]
+    preconditions:
+      - 阶段从 1 提升到 2 或更高
+    steps:
+      - action: 对比阶段前后的普通敌机生成速度与属性
+        expected: 敌机变强变快
+    expected_results:
+      - 生成间隔缩短
+      - 敌机速度更快
+      - 敌机生命值按阶段提升
+    assertions:
+      - type: state
+        description: 敌机强度递增与阶段值一致
+        validate:
+          - spawnInterval = max(0.22, 0.7 - (level-1)*0.04)
+          - enemy.speed = (random * 80 + 120) * levelScale
+          - enemy.health = ceil(levelScale)
+        evidence: [enemy_stats_log]

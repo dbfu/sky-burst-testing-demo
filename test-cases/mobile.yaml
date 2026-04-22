@@ -1,0 +1,126 @@
+# 移动端控制模块测试用例
+# 覆盖虚拟按键、触屏拖动、鼠标排除
+
+test_cases:
+  - id: TC-MOBILE-001
+    title: 虚拟方向键显示
+    priority: P1
+    module: mobile
+    tags: [mobile, ui, responsive]
+    preconditions:
+      - 页面已加载
+    steps:
+      - action: 设置视口宽度为 920px 以下
+        input:
+          viewport:
+            width: 600
+            height: 800
+    expected_results:
+      - .mobile-controls 可见
+      - 存在 4 个方向按钮（上、下、左、右）
+    assertions:
+      - type: dom
+        selector: ".mobile-controls"
+        condition: visible
+      - type: dom
+        selector: ".control-btn"
+        condition: count == 4
+
+  - id: TC-MOBILE-002
+    title: 虚拟方向键移动
+    priority: P0
+    module: mobile
+    tags: [mobile, movement, regression]
+    preconditions:
+      - 移动端视口（宽度 < 920px）
+      - 游戏运行中
+    steps:
+      - action: 分别长按四个方向按钮 500ms 后释放
+        input:
+          - direction: left
+            duration: 500ms
+          - direction: right
+            duration: 500ms
+          - direction: up
+            duration: 500ms
+          - direction: down
+            duration: 500ms
+    expected_results:
+      - 玩家按对应方向移动
+      - pointerdown 生效
+      - pointerup 后停止移动
+    assertions:
+      - type: state
+        description: 各方向移动正确响应
+        evidence: [player_position_log, video]
+
+  - id: TC-MOBILE-003
+    title: 按钮离开后停止移动
+    priority: P0
+    module: mobile
+    tags: [mobile, movement, regression]
+    preconditions:
+      - 移动端视口
+      - 游戏运行中
+    steps:
+      - action: 按住方向按钮
+        input:
+          direction: left
+      - action: 触发 pointerleave（手指滑出按钮区域）
+        expected: 移动停止
+    expected_results:
+      - 对应方向状态被清除
+      - 玩家停止继续朝该方向移动
+    assertions:
+      - type: state
+        description: 不应出现"松手后仍持续移动"
+        validate:
+          - keys[left] == false after pointerleave
+        evidence: [state_log]
+
+  - id: TC-MOBILE-004
+    title: 触屏拖动玩家
+    priority: P1
+    module: mobile
+    tags: [mobile, touch, movement]
+    preconditions:
+      - 触屏输入（pointerType != mouse）
+      - 游戏运行中
+    steps:
+      - action: 在 canvas 内持续拖动
+        input:
+          pointerType: touch
+          action: drag
+    expected_results:
+      - 玩家跟随拖动位置移动
+      - 玩家仍受边界限制
+    assertions:
+      - type: state
+        description: 玩家位置与触点近似同步
+        validate:
+          - player.x 跟随 touch.x
+          - player.y 跟随 touch.y
+          - 边界限制生效
+        evidence: [position_log, video]
+
+  - id: TC-MOBILE-005
+    title: 鼠标移动不应触发拖动控制
+    priority: P1
+    module: mobile
+    tags: [desktop, mouse, input]
+    preconditions:
+      - 桌面端
+      - 游戏运行中
+    steps:
+      - action: 仅移动鼠标，不按键
+        input:
+          pointerType: mouse
+          action: move
+          buttons: none
+    expected_results:
+      - 玩家不会因为 pointermove 自动跟随鼠标
+    assertions:
+      - type: state
+        description: pointerType == mouse 时应被忽略
+        validate:
+          - player.position 不变

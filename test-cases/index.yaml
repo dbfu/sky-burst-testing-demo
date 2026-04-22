@@ -1,0 +1,95 @@
+# Sky Burst 测试用例索引
+# 用于测试用例管理和快速检索
+
+# 变更记录:
+# - 2026-04-22: 初始版本 v1.0
+# - 2026-04-25: 新增道具系统模块 (v1.1)
+
+project:
+  name: Sky Burst
+  type: Canvas 纵版飞行射击游戏
+  version: v1.1
+  entry: index.html
+  scripts:
+    - game.js
+    - items.js  # v1.1 新增
+  styles:
+    - style.css
+
+modules:
+  - id: ui
+    name: UI 模块
+    file: ui.yaml
+    count: 3
+    priority: P0
+    version: v1.0
+
+  - id: controls
+    name: 键盘控制模块
+    file: controls.yaml
+    count: 8
+    priority: P0
+    version: v1.0
+
+  - id: mobile
+    name: 移动端控制模块
+    file: mobile.yaml
+    count: 5
+    priority: P1
+    version: v1.0
+
+  - id: mechanics
+    name: 游戏机制模块
+    file: mechanics.yaml
+    count: 8
+    priority: P0
+    version: v1.0
+
+  - id: state
+    name: 状态流转模块
+    file: state.yaml
+    count: 3
+    priority: P0
+    version: v1.0
+
+  - id: render
+    name: 渲染与性能模块
+    file: render.yaml
+    count: 5
+    priority: P1
+    version: v1.0
+
+  - id: items
+    name: 道具系统模块
+    file: items.yaml
+    count: 5
+    priority: P0
+    version: v1.1
+    status: new-feature
+
+environment:
+  os: macOS
+  browser: Chromium
+  execution: 手工验证或浏览器自动化
+  viewports:
+    - name: desktop
+      width: 1200
+      height: 900
+      default: true
+    - name: mobile
+      width: 600
+      height: 800
+    - name: minimal
+      width: 300
+      height: 400
+
+timing_tolerance:
+  bullet_interval: "0.17s +/- 0.05s"
+  boss_spawn: "16s +/- 0.5s"
+  movement_frame: "允许因帧率产生少量位置偏差"
+
+known_issues:
+  - id: BUG-001
+    description: 启动提示提到"空格冲刺"但未实现
+    risk: 误导玩家和测试人员
+    suggestion: 删除提示或补上功能
